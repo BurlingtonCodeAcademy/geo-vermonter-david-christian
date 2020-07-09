@@ -1,13 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import VTMap from './VTMap.js';
+import App from './App.js';
 
 ReactDOM.render(
   <div>
-    <h1>Hello World!</h1>
-  <div style={{ height: '600px', width: '600px' }}>
-      <VTMap />
-    </div>
+    <App />
   </div>,
   document.getElementById('root')
 )
