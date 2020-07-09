@@ -46,13 +46,15 @@ class VTMap extends React.Component {
 
     checkValidPoint = (layer, rect, pin) => {
         if (layer.length) {
+            console.log('This is in Vermont!');
             return pin
         }
         else {
             let pin = this.randPoint(rect)
+            console.log(pin)
             let inLayer = (leafletPip.pointInLayer([pin[0], pin[1]], L.geoJSON(borderData)))
 
-            this.checkValidPoint(inLayer, rect, pin)
+            return this.checkValidPoint(inLayer, rect, pin)
         }
     }
 
@@ -68,15 +70,6 @@ class VTMap extends React.Component {
 
         console.log(validPoint)
 
-        // console.log(inLayer)
-        // if (inLayer.length) {
-        // console.log('This is in the rectangle')
-        // }
-        // 
-        // else{
-        // 
-        // console.log('This is not inside the rectangle')
-        // }
 
         let vtBorder = borderData.geometry.coordinates[0].map(coordSet => {
             return [coordSet[1], coordSet[0]]
