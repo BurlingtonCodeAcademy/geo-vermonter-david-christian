@@ -8,37 +8,43 @@ class App extends React.Component {
 
         this.state = {
             playing: false,
-            
-        }
-    } 
-    
 
-// leafletPip.pointInLayer() ended here 7/8/20 ...
+        }
+    }
+
+
+    // leafletPip.pointInLayer() ended here 7/8/20 ...
 
 
     // Methods go here
-    clickHandler = (evt) => {
-        evt.preventDefault(
+    // clickHandler = (evt) => {
+    //     evt.preventDefault()
+    //     this.setState({
+    //         playing: true
+    //     })
 
-            this.setState({
-                playing: true
-            })
-        )
-    }
-    
-    
+       
+    //     let corners = this.getCorners(borderData)
+
+    //     let pinDraft = this.randPoint(corners) //this is the point on the map we are going to check
+
+    //     let layerDraft = (leafletPip.pointInLayer([pinDraft[0], pinDraft[1]], L.geoJSON(borderData)))
+
+    //     let validPoint = this.checkValidPoint(layerDraft, corners, pinDraft)
+
+    //     console.log(`This is the valid point: ${validPoint}`)
+
+
+    // }
+
+
     render() {
 
         return (
             <div>
                 <div style={{ height: '600px', width: '600px' }}>
                     <VTMap />
-                </div>
-                <div>
-                    <button disabled={this.state.playing} onClick={this.clickHandler}>Start Game</button>
-                    <button disabled={!this.state.playing}>Guess</button>
-                    <button disabled={!this.state.playing}>Give Up</button>
-                </div>
+                </div>               
             </div>
         )
     }
