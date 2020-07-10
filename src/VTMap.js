@@ -48,6 +48,7 @@ class VTMap extends React.Component {
         )
     }
 
+    // Logic to check if the randomly chosen point is within the VTBorder
     checkValidPoint = (layer, rect, pin) => {
         if (layer.length) {
             console.log(`Correct length, returning pin: ${pin}`)
@@ -67,7 +68,7 @@ class VTMap extends React.Component {
         this.setState({
             playing: true
         })
-        let myMap = document.getElementById('mainMap')
+        // let myMap = document.getElementById('mainMap')
 
         let corners = this.getCorners(borderData)
 
@@ -83,6 +84,7 @@ class VTMap extends React.Component {
         defaultPos = validPoint
         defaultZoom = 18
 
+        // when the 'Valid Point' is chosen, the game will reset state to add the ?'s to the info panel
         this.setState({
             latitude: '?',
             longitude: '?',
@@ -91,36 +93,52 @@ class VTMap extends React.Component {
         })
     }
 
-render() {
+    // pulling the county/lat/town/village(not county according to Postman?) -- then we want to 'this.setState' when the "I Give Up Button is clicked"
+    componentDidMount(pin) {
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pin[1]}&lon=${pin[0]}&format=geojson`)
+            .then((res) => res.json())
+            .then((obj) => {
+                this.setState({
+                    latitude: obj.lat,
+                    longitude: obj.lon,
+                    county: obj.county,
+                    town: obj.village
+                })
+            })
+        }
 
-    let vtBorder = borderData.geometry.coordinates[0].map(coordSet => {
-        return [coordSet[1], coordSet[0]]
-    })
-    // Centering the map on [44.0886, -72.7317]
+    render() {
 
-    return ( // You can only return one thing, so put entire JSX in one div
-        <div id='container'>
-            <h2>Latitude = {this.state.latitude} </h2>
-            <h2>Longitude = {this.state.longitude} </h2>
-            <h2>County = {this.state.county}  </h2>
-            <h2>Town = {this.state.town}</h2>
-            <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} >
-                <TileLayer
-                    url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                    attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
+        let vtBorder = borderData.geometry.coordinates[0].map(coordSet => {
+            return [coordSet[1], coordSet[0]]
+        })
+        // Centering the map on [44.0886, -72.7317]
 
-                <Polygon positions={vtBorder} />
+        return ( // You can only return one thing, so put entire JSX in one div
+            <div id='container'>
 
-            </Map>
-            <div>
-                <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
-                <button disabled={!this.state.playing}>Guess</button>
-                <button disabled={!this.state.playing}>Give Up</button>
+                <h2>Latitude = {this.state.latitude} </h2>
+                <h2>Longitude = {this.state.longitude} </h2>
+                <h2>County = {this.state.county}  </h2>
+                <h2>Town = {this.state.town}</h2>
+
+                <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} >
+                    <TileLayer
+                        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                        attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
+
+                    <Polygon positions={vtBorder} />
+
+                </Map>
+                <div>
+                    <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
+                    <button disabled={!this.state.playing}>Guess</button>
+                    <button disabled={!this.state.playing}>Give Up</button>
+                </div>
             </div>
-        </div>
 
-    )
-}
+        )
+    }
 }
 
 export default VTMap
