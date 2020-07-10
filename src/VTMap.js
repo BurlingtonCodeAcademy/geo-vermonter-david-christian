@@ -72,8 +72,6 @@ class VTMap extends React.Component {
             let newPin = this.randPoint(rect)
             let newLayer = (leafletPip.pointInLayer([pin[1], pin[0]], L.geoJSON(borderData)))
             return this.checkValidPoint(newLayer, rect, newPin)
-            console.log('This is in Vermont!');
-            return pin
         }
 
     }
