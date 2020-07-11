@@ -82,7 +82,7 @@ class VTMap extends React.Component {
         let layerDraft = (leafletPip.pointInLayer([pinDraft[0], pinDraft[1]], geoJsonData))
 
         let validPoint = this.checkValidPoint(layerDraft, corners, pinDraft)
-        
+
         console.log(`This is the valid point: ${validPoint}`)
         defaultPos = validPoint
         defaultZoom = 18
@@ -132,28 +132,17 @@ class VTMap extends React.Component {
 
     }
 
-    // This is a work in progres but this section will handle the guess button modal that needs to be displayed with the list of countys
-    guessCounty = (props) => {
-        let countyList = ['Grand Isle', 'Franklin', 'Orleans', 'Essex', 'Chittenden', 'Lamoille', 'Caledonia', 'Washington', 'Addison', 'Bennington', 'Orange', 'Rutland', 'Windham', 'Windsor']
+    // This is a work in progress but this section will handle the guess button modal that needs to be displayed
+    guessHandler = (evt) => {
+        evt.preventDefault();
 
-        return (
-            <div id='guess-list'>
-                <ol>
-                    {countyList.map(county => (
-                        <li className = 'county-guess' key={county} onClick={props.guessHandler}>
-                            {county}
-                        </li>
-                    ))}
-                </ol>
-            </div>
-        )
+        this.setState({
+            modalDisplayed: true
+        })
     }
 
-
     render() {
-
-        // let modal
-        
+      
         let vtBorder = borderData.geometry.coordinates[0].map(coordSet => {
             return [coordSet[1], coordSet[0]]
         })
@@ -178,13 +167,37 @@ class VTMap extends React.Component {
                 </Map>
                 <div>
                     <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
-                    <button disabled={!this.state.playing} onClick={this.guessCounty}>Guess</button>
+                    <button disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
                     <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
+
                 </div>
+                {this.state.modalDisplayed === true ? <GuessCountyModal/> : null}
             </div>
 
         )
     }
 }
+
+
+function GuessCountyModal (props) {
+
+    let countyList = ['Grand Isle', 'Franklin', 'Orleans', 'Essex', 'Chittenden', 'Lamoille', 'Caledonia', 'Washington', 'Addison', 'Bennington', 'Orange', 'Rutland', 'Windham', 'Windsor']
+
+    return (
+        <div id='guess-list'>
+            <ol>
+                {countyList.map(county => (
+                    <li>
+                        {county}
+                    </li>
+                ))}
+            </ol>
+
+            <button onClick={props.close}>Close</button>
+
+        </div>
+    );
+}
+
 
 export default VTMap
