@@ -146,7 +146,7 @@ class VTMap extends React.Component {
                 <h2>County = {this.state.county}  </h2>
                 <h2>Town = {this.state.town}</h2>
 
-                <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} >
+                <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} >
                     <TileLayer
                         url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
                         attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
