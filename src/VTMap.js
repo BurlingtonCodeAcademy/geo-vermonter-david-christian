@@ -17,11 +17,13 @@ class VTMap extends React.Component {
             longitude: '',
             county: '',
             town: '',
+            status: '',
+            guess: '',
         }
     }
 
     // itterate over indexs [0]  and [1] in each array in the list of arrays and return the highest of each value
-    getCorners = (geoJson) => {
+    getCorners = () => {
 
         let maxLon = -73.35218
         let minLon = -71.510225
@@ -76,7 +78,7 @@ class VTMap extends React.Component {
 
         let geoJsonData = L.geoJSON(borderData)
 
-        let layerDraft = (leafletPip.pointInLayer([pinDraft[1], pinDraft[0]], geoJsonData))
+        let layerDraft = (leafletPip.pointInLayer([pinDraft[0], pinDraft[1]], geoJsonData))
 
         let validPoint = this.checkValidPoint(layerDraft, corners, pinDraft)
 
@@ -93,49 +95,44 @@ class VTMap extends React.Component {
         })
 
         // pulling the county/lat/town/village(not county according to Postman?) --  --All Info stored in variable 'townData'
-        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pinDraft[1]}&lon=${pinDraft[0]}&format=geojson`)
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${validPoint[0]}&lon=${validPoint[1]}&format=geojson`)
             .then((res) => res.json())
             .then((obj) => {
+                console.log(obj)
                 this.setState({
                     townData: {
-                        latitude: obj.lat,
-                        longitude: obj.lon,
-                        county: obj.county,
-                        town: obj.village
+                        latitude: validPoint[0],
+                        longitude: validPoint[1],
+                        county: obj.features[0].properties.address.county,
+                        town: obj.features[0].properties.address.vilage || obj.features[0].properties.address.hamlet || obj.features[0].properties.address.town
                     }
                 })
             })
     }
-    
+
     // --------------Working on guessHandler for "I Give Up Story"--------------------------------
 
-    // guessHandler = (evt) => {
-        // if (evt.target.textContent === 'Give Up') {
-            // this.setState({
-                // guess: false,
-            // });
-        // }
-        // else if (event.target.textContent + ' County' !== this.state.county) {
-            // this.setState({
-                // status: 'Wrong!'
-            // })
-        // } else {
-            // this.setState({
-                // vtBorder: {
-                    // lat: this.state.pinDraft[0][0],
-                    // lon: this.state.pinDraft[0][1],
-                    // zoom: 15,
-                // },
-                // status: 'Right!',
-                // playing: false,
-                // guess: false,
-            // })
-        // }
-    // }
+    giveUpHandler = (evt) => {
+        if (evt.target.textContent === 'Give Up') {
+            let latVar = this.state.townData.latitude
+            let lonVar = this.state.townData.longitude
+            let countyVar = this.state.townData.county
+            let townVar = this.state.townData.town //|| this.state.townData.hamlet || this.state.town
+            console.log(latVar)
+            this.setState({
+                latitude: latVar,
+                longitude: lonVar,
+                county: countyVar,
+                town: townVar,
+                playing: false
+            });
+        }
+
+    }
 
 
     render() {
-
+        console.log(this.state.townData)
         let vtBorder = borderData.geometry.coordinates[0].map(coordSet => {
             return [coordSet[1], coordSet[0]]
         })
@@ -160,7 +157,7 @@ class VTMap extends React.Component {
                 <div>
                     <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
                     <button disabled={!this.state.playing}>Guess</button>
-                    <button disabled={!this.state.playing}>Give Up</button>
+                    <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
                 </div>
             </div>
 
