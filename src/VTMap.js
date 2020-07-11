@@ -19,6 +19,7 @@ class VTMap extends React.Component {
             town: '',
             status: '',
             guess: '',
+            modalDisplayed: false,
         }
     }
 
@@ -59,14 +60,14 @@ class VTMap extends React.Component {
         else {
             console.log("Invalid point...")
             let newPin = this.randPoint(rect)
-            let newLayer = (leafletPip.pointInLayer([pin[1], pin[0]], L.geoJSON(borderData)))
+            let newLayer = (leafletPip.pointInLayer([newPin[1], newPin[0]], L.geoJSON(borderData)))
             return this.checkValidPoint(newLayer, rect, newPin)
         }
-
     }
 
     clickHandlerStart = (evt) => {
-        evt.preventDefault()
+        evt.preventDefault();
+
         this.setState({
             playing: true
         })
@@ -81,7 +82,7 @@ class VTMap extends React.Component {
         let layerDraft = (leafletPip.pointInLayer([pinDraft[0], pinDraft[1]], geoJsonData))
 
         let validPoint = this.checkValidPoint(layerDraft, corners, pinDraft)
-
+        
         console.log(`This is the valid point: ${validPoint}`)
         defaultPos = validPoint
         defaultZoom = 18
@@ -104,21 +105,22 @@ class VTMap extends React.Component {
                         latitude: validPoint[0],
                         longitude: validPoint[1],
                         county: obj.features[0].properties.address.county,
-                        town: obj.features[0].properties.address.vilage || obj.features[0].properties.address.hamlet || obj.features[0].properties.address.town
+                        town: obj.features[0].properties.address.village || obj.features[0].properties.address.hamlet || obj.features[0].properties.address.town || obj.features[0].properties.address.city
                     }
                 })
             })
     }
 
-    // --------------Working on guessHandler for "I Give Up Story"--------------------------------
-
+    // Handles guess button and then displays current location data + makes the start button available again
     giveUpHandler = (evt) => {
+        evt.preventDefault();
+
         if (evt.target.textContent === 'Give Up') {
             let latVar = this.state.townData.latitude
             let lonVar = this.state.townData.longitude
             let countyVar = this.state.townData.county
-            let townVar = this.state.townData.town //|| this.state.townData.hamlet || this.state.town
-            console.log(latVar)
+            let townVar = this.state.townData.town
+
             this.setState({
                 latitude: latVar,
                 longitude: lonVar,
@@ -130,12 +132,24 @@ class VTMap extends React.Component {
 
     }
 
+    // This is a work in progres but this section will handle the guess button modal that needs to be displayed
+    guessHandler = (evt) => {
+        evt.preventDefault();
+
+        this.setState({
+            modalDisplayed: true
+        })
+    }
+
 
     render() {
-        console.log(this.state.townData)
+
+        // let modal
+        
         let vtBorder = borderData.geometry.coordinates[0].map(coordSet => {
             return [coordSet[1], coordSet[0]]
         })
+
         // Centering the map on [44.0886, -72.7317]
 
         return ( // You can only return one thing, so put entire JSX in one div
@@ -156,7 +170,7 @@ class VTMap extends React.Component {
                 </Map>
                 <div>
                     <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
-                    <button disabled={!this.state.playing}>Guess</button>
+                    <button disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
                     <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
                 </div>
             </div>
