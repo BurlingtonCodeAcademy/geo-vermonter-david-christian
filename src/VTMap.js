@@ -91,21 +91,23 @@ class VTMap extends React.Component {
             county: '?',
             town: '?',
         })
-    }
 
-    // pulling the county/lat/town/village(not county according to Postman?) -- then we want to 'this.setState' when the "I Give Up Button is clicked"
-    componentDidMount(pin) {
-        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pin[1]}&lon=${pin[0]}&format=geojson`)
+        // pulling the county/lat/town/village(not county according to Postman?) -- then we want to 'this.setState' when the "I Give Up Button is clicked"
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pinDraft[1]}&lon=${pinDraft[0]}&format=geojson`)
             .then((res) => res.json())
             .then((obj) => {
                 this.setState({
+                    townData: {
                     latitude: obj.lat,
                     longitude: obj.lon,
                     county: obj.county,
                     town: obj.village
+                    }
                 })
             })
-        }
+    }
+
+
 
     render() {
 
