@@ -132,13 +132,21 @@ class VTMap extends React.Component {
 
     }
 
-    // This is a work in progres but this section will handle the guess button modal that needs to be displayed
-    guessHandler = (evt) => {
-        evt.preventDefault();
+    // This is a work in progres but this section will handle the guess button modal that needs to be displayed with the list of countys
+    guessCounty = (props) => {
+        let countyList = ['Grand Isle', 'Franklin', 'Orleans', 'Essex', 'Chittenden', 'Lamoille', 'Caledonia', 'Washington', 'Addison', 'Bennington', 'Orange', 'Rutland', 'Windham', 'Windsor']
 
-        this.setState({
-            modalDisplayed: true
-        })
+        return (
+            <div id='guess-list'>
+                <ol>
+                    {countyList.map(county => (
+                        <li className = 'county-guess' key={county} onClick={props.guessHandler}>
+                            {county}
+                        </li>
+                    ))}
+                </ol>
+            </div>
+        )
     }
 
 
@@ -160,7 +168,7 @@ class VTMap extends React.Component {
                 <h2>County = {this.state.county}  </h2>
                 <h2>Town = {this.state.town}</h2>
 
-                <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} >
+                <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} dragging={false}>
                     <TileLayer
                         url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
                         attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
@@ -170,7 +178,7 @@ class VTMap extends React.Component {
                 </Map>
                 <div>
                     <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
-                    <button disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
+                    <button disabled={!this.state.playing} onClick={this.guessCounty}>Guess</button>
                     <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
                 </div>
             </div>
