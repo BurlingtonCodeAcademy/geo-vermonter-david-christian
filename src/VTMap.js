@@ -92,21 +92,46 @@ class VTMap extends React.Component {
             town: '?',
         })
 
-        // pulling the county/lat/town/village(not county according to Postman?) -- then we want to 'this.setState' when the "I Give Up Button is clicked"
+        // pulling the county/lat/town/village(not county according to Postman?) --  --All Info stored in variable 'townData'
         fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pinDraft[1]}&lon=${pinDraft[0]}&format=geojson`)
             .then((res) => res.json())
             .then((obj) => {
                 this.setState({
                     townData: {
-                    latitude: obj.lat,
-                    longitude: obj.lon,
-                    county: obj.county,
-                    town: obj.village
+                        latitude: obj.lat,
+                        longitude: obj.lon,
+                        county: obj.county,
+                        town: obj.village
                     }
                 })
             })
     }
+    
+    // --------------Working on guessHandler for "I Give Up Story"--------------------------------
 
+    // guessHandler = (evt) => {
+        // if (evt.target.textContent === 'Give Up') {
+            // this.setState({
+                // guess: false,
+            // });
+        // }
+        // else if (event.target.textContent + ' County' !== this.state.county) {
+            // this.setState({
+                // status: 'Wrong!'
+            // })
+        // } else {
+            // this.setState({
+                // vtBorder: {
+                    // lat: this.state.pinDraft[0][0],
+                    // lon: this.state.pinDraft[0][1],
+                    // zoom: 15,
+                // },
+                // status: 'Right!',
+                // playing: false,
+                // guess: false,
+            // })
+        // }
+    // }
 
 
     render() {
