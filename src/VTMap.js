@@ -93,9 +93,10 @@ class VTMap extends React.Component {
         })
 
         // pulling the county/lat/town/village(not county according to Postman?) --  --All Info stored in variable 'townData'
-        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pinDraft[1]}&lon=${pinDraft[0]}&format=geojson`)
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${validPoint[1]}&lon=${validPoint[0]}&format=geojson`)
             .then((res) => res.json())
             .then((obj) => {
+                alert(`county: ${obj.county} village: ${obj.village} town: ${obj.town} validPoint: ${validPoint[0]}`)
                 this.setState({
                     townData: {
                         latitude: obj.lat,
@@ -149,7 +150,7 @@ class VTMap extends React.Component {
                 <h2>County = {this.state.county}  </h2>
                 <h2>Town = {this.state.town}</h2>
 
-                <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} >
+                <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} >
                     <TileLayer
                         url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
                         attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
