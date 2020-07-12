@@ -133,7 +133,7 @@ class VTMap extends React.Component {
     }
 
     // This is a work in progress but this section will handle the guess button modal that needs to be displayed
-    guessHandler = (evt) => {
+    guessButtonHandler = (evt) => {
         evt.preventDefault();
 
         this.setState({
@@ -141,13 +141,26 @@ class VTMap extends React.Component {
         })
     }
 
+    guessHandler = (evt) => {
+        evt.preventDefault();
+
+        if(evt.target.textContent === 'Cancel'){
+            this.setState({
+                modalDisplayed: false,
+            })
+        } else if (evt.target.textContent + ' County' === this.state.county){
+            this.state({
+                status: 'Correct!',
+            })
+        }
+    }
+
     render() {
-      
+
+      // Centering the map on [44.0886, -72.7317]
         let vtBorder = borderData.geometry.coordinates[0].map(coordSet => {
             return [coordSet[1], coordSet[0]]
         })
-
-        // Centering the map on [44.0886, -72.7317]
 
         return ( // You can only return one thing, so put entire JSX in one div
             <div id='container'>
@@ -167,7 +180,7 @@ class VTMap extends React.Component {
                 </Map>
                 <div>
                     <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
-                    <button disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
+                    <button disabled={!this.state.playing} onClick={this.guessButtonHandler} handleGuess={this.guessHandler}>Guess</button>
                     <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
 
                 </div>
@@ -178,7 +191,6 @@ class VTMap extends React.Component {
     }
 }
 
-
 function GuessCountyModal (props) {
 
     let countyList = ['Grand Isle', 'Franklin', 'Orleans', 'Essex', 'Chittenden', 'Lamoille', 'Caledonia', 'Washington', 'Addison', 'Bennington', 'Orange', 'Rutland', 'Windham', 'Windsor']
@@ -187,17 +199,17 @@ function GuessCountyModal (props) {
         <div id='guess-list'>
             <ol>
                 {countyList.map(county => (
-                    <li>
+                    <li class='county-guess' key ={county} onClick={props.guessButtonHandler}>
                         {county}
                     </li>
                 ))}
             </ol>
 
-            <button onClick={props.close}>Close</button>
+            <button>Guess</button>
+            <button onClick={props.handleGuess}>Cancel</button>
 
         </div>
     );
 }
-
 
 export default VTMap
