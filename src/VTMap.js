@@ -172,6 +172,9 @@ class VTMap extends React.Component {
 
         return ( // You can only return one thing, so put entire JSX in one div
             <div id='container'>
+                <div>
+                    <h2>Status Bar = {this.state.status}</h2>
+                </div>
 
                 <h2>Latitude = {this.state.latitude} </h2>
                 <h2>Longitude = {this.state.longitude} </h2>
