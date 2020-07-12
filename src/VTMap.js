@@ -143,13 +143,14 @@ class VTMap extends React.Component {
 
     guessHandler = (evt) => {
         evt.preventDefault();
-
+        
         if(evt.target.textContent === 'Cancel'){
             this.setState({
                 modalDisplayed: false,
             })
-        } else if (evt.target.textContent + ' County' === this.state.county){
-            this.state({
+        } else if (evt.target.textContent + 'county' === this.state.county){
+            this.setState({
+                
                 status: 'Correct!',
             })
         }
@@ -184,7 +185,7 @@ class VTMap extends React.Component {
                     <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
 
                 </div>
-                {this.state.modalDisplayed === true ? <GuessCountyModal/> : null}
+                {this.state.modalDisplayed === true ? <GuessCountyModal handleGuess={this.guessHandler} /> : null}
             </div>
 
         )
@@ -194,18 +195,17 @@ class VTMap extends React.Component {
 function GuessCountyModal (props) {
 
     let countyList = ['Grand Isle', 'Franklin', 'Orleans', 'Essex', 'Chittenden', 'Lamoille', 'Caledonia', 'Washington', 'Addison', 'Bennington', 'Orange', 'Rutland', 'Windham', 'Windsor']
-
     return (
         <div id='guess-list'>
             <ol>
                 {countyList.map(county => (
-                    <li class='county-guess' key ={county} onClick={props.guessButtonHandler}>
+                    <li className='county-guess' key ={county} onClick={props.guessButtonHandler}>
                         {county}
                     </li>
                 ))}
             </ol>
 
-            <button>Guess</button>
+            <button onClick={props.handleGuess}>Guess</button>
             <button onClick={props.handleGuess}>Cancel</button>
 
         </div>
