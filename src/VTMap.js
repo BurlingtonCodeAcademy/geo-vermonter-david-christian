@@ -20,6 +20,7 @@ class VTMap extends React.Component {
             status: '',
             guess: '',
             modalDisplayed: false,
+            points: 100,
         }
     }
 
@@ -136,12 +137,26 @@ class VTMap extends React.Component {
     guessButtonHandler = (evt) => {
         evt.preventDefault();
         let check = evt.target.innerHTML + 'County'
-        if(check === this.state.townData.county){
-            console.log(`${check} is equal to ${this.state.townData.county}`)
+        if (check === this.state.townData.county) {
+            // console.log(`${check} is equal to ${this.state.townData.county}`)
+            let latVar = this.state.townData.latitude
+            let lonVar = this.state.townData.longitude
+            let countyVar = this.state.townData.county
+            let townVar = this.state.townData.town
+            this.setState({
+                latitude: latVar,
+                longitude: lonVar,
+                county: countyVar,
+                town: townVar,
+                status: 'Correct!',
+            })
         } else {
-            console.log(`${check} is not equal to ${this.state.townData.county}`)
+            // console.log(`${check} is not equal to ${this.state.townData.county}`)
+            this.setState( state => ({
+                status: 'Wrong! Guess again or Cancel!',
+                points: state.points -10,
+            }))
         }
-        let countyList = ['Grand Isle', 'Franklin', 'Orleans', 'Essex', 'Chittenden', 'Lamoille', 'Caledonia', 'Washington', 'Addison', 'Bennington', 'Orange', 'Rutland', 'Windham', 'Windsor']
         this.setState({
             modalDisplayed: true
         })
@@ -150,22 +165,16 @@ class VTMap extends React.Component {
     cancelHandler = (evt) => {
         evt.preventDefault();
         console.log('What is this: ' + evt.target.textContent)
-        if(evt.target.textContent === 'Cancel'){
+        if (evt.target.textContent === 'Cancel') {
             this.setState({
                 modalDisplayed: false,
             })
-        } 
-        
-        // else if (evt.target.textContent + 'county' === this.state.county){
-        //     this.setState({
-        //         status: 'Correct!',
-        //     })
-        // }
+        }
     }
 
     render() {
 
-      // Centering the map on [44.0886, -72.7317]
+        // Centering the map on [44.0886, -72.7317]
         let vtBorder = borderData.geometry.coordinates[0].map(coordSet => {
             return [coordSet[1], coordSet[0]]
         })
@@ -174,6 +183,8 @@ class VTMap extends React.Component {
             <div id='container'>
                 <div>
                     <h2>Status Bar = {this.state.status}</h2>
+                    <h3>Score = {this.state.points}</h3>
+                    
                 </div>
 
                 <h2>Latitude = {this.state.latitude} </h2>
@@ -195,14 +206,14 @@ class VTMap extends React.Component {
                     <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
 
                 </div>
-                {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler}/> : null}
+                {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler} /> : null}
             </div>
 
         )
     }
 }
 
-function GuessCountyModal (props) {
+function GuessCountyModal(props) {
     let countyList = ['Grand Isle', 'Franklin', 'Orleans', 'Essex', 'Chittenden', 'Lamoille', 'Caledonia', 'Washington', 'Addison', 'Bennington', 'Orange', 'Rutland', 'Windham', 'Windsor']
     return (
         <div id='guess-list'>
@@ -214,7 +225,7 @@ function GuessCountyModal (props) {
                 ))}
             </ol>
 
-            
+
             <button onClick={props.handleCancel}>Cancel</button>
 
         </div>
