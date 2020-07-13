@@ -5,7 +5,7 @@ import borderData from './border.js';
 import L from 'leaflet'
 import leafletPip from 'leaflet-pip'
 let defaultPos = [44.0886, -72.7317]
-let defaultZoom = 8
+let defaultZoom = 7
 
 
 class VTMap extends React.Component {
@@ -17,7 +17,7 @@ class VTMap extends React.Component {
             longitude: '',
             county: '',
             town: '',
-            status: '',
+            status: 'Game Started, Awaiting your first guess..',
             guess: '',
             modalDisplayed: false,
             points: 100,
@@ -151,10 +151,11 @@ class VTMap extends React.Component {
                 status: 'Correct!',
             })
         } else {
+            // 
             // console.log(`${check} is not equal to ${this.state.townData.county}`)
-            this.setState( state => ({
-                status: 'Wrong! Guess again or Cancel!',
-                points: state.points -10,
+            this.setState(state => ({
+                status: 'Wrong! Guess again or keep searching!',
+                points: state.points - 10,
             }))
         }
         this.setState({
@@ -180,35 +181,42 @@ class VTMap extends React.Component {
         })
 
         return ( // You can only return one thing, so put entire JSX in one div
-            <div id='container'>
-                <div>
-                    <h2>Status Bar = {this.state.status}</h2>
+
+            <div id='mainContainer'>
+
+                <div id='statusHeader'>
+                    <h2>Status: {this.state.status}</h2>
                     <h3>Score = {this.state.points}</h3>
-                    
+
                 </div>
-
-                <h2>Latitude = {this.state.latitude} </h2>
-                <h2>Longitude = {this.state.longitude} </h2>
-                <h2>County = {this.state.county}  </h2>
-                <h2>Town = {this.state.town}</h2>
-
-                <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} dragging={false}>
-                    <TileLayer
-                        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                        attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
-
-                    <Polygon positions={vtBorder} />
-
-                </Map>
+                {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler} /> : null}
                 <div>
+                    <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} dragging={false}>
+                        <TileLayer
+                            url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                            attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
+
+                        <Polygon positions={vtBorder} />
+
+                    </Map>
+                </div>
+                <div id='gameButtons'>
                     <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
                     <button disabled={!this.state.playing} onClick={this.guessButtonHandler} handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler}>Guess</button>
                     <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
 
                 </div>
-                {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler} /> : null}
+                <div id='centerButtons'>
+                    <div id='navigationButtons'>
+                        <button>North</button>
+                        <div id='eastWestButtons'>
+                            <button>East</button>
+                            <button>West</button>
+                        </div>
+                        <button>South</button>
+                    </div>
+                </div>
             </div>
-
         )
     }
 }

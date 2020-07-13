@@ -1,5 +1,48 @@
-#container{
+#body {
+    background-image: url("https://cdn3.vectorstock.com/i/1000x1000/44/62/earth-relief-map-seamless-pattern-element-vector-12184462.jpg");
+}
+
+#root {
     display: flex;
     justify-content: center;
+}
+
+#mainContainer {
+    display: inline-block;
+    justify-content: center;
     flex-direction: column;
+    position: relative;
+    font-size: 150%;
+}
+
+#gameButtons {
+    display: flex;
+    justify-content: center;
+    margin-top: 3%;
+}
+
+#centerButtons{
+    display:flex;
+    justify-content: center;
+    margin-top: 3%;
+}
+#navigationButtons{
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#eastWestButtons{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+#modal {
+    position: absolute;
+    z-index: 1;
+}
+
+#guess-list {
+    position: absolute;
+    z-index: 401;
 }
