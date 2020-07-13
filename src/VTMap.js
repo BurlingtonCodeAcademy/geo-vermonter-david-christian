@@ -158,9 +158,14 @@ class VTMap extends React.Component {
                 points: state.points - 10,
             }))
         }
-        this.setState({
-            modalDisplayed: true
-        })
+
+    }
+    guessHandler = (evt) => {
+        if (evt.target.textContent === 'Guess') {
+            this.setState({
+                modalDisplayed: true
+            })
+        }
     }
 
     cancelHandler = (evt) => {
@@ -207,7 +212,7 @@ class VTMap extends React.Component {
                 </div>
                 <div id='gameButtons'>
                     <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
-                    <button disabled={!this.state.playing} onClick={this.guessButtonHandler} handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler}>Guess</button>
+                    <button disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
                     <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
 
                 </div>
