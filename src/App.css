@@ -22,6 +22,12 @@
     justify-content: space-evenly;
 }
 
+#row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
 #gameButtons {
     display: flex;
     justify-content: center;
