@@ -12,7 +12,14 @@
     justify-content: center;
     flex-direction: column;
     position: relative;
-    font-size: 150%;
+    font-size: 125%;
+}
+
+#statusBar {
+    display: flex;
+    flex-direction: row;
+    font-size: 50%;
+    justify-content: space-evenly;
 }
 
 #gameButtons {
@@ -21,17 +28,19 @@
     margin-top: 3%;
 }
 
-#centerButtons{
-    display:flex;
+#centerButtons {
+    display: flex;
     justify-content: center;
     margin-top: 3%;
 }
-#navigationButtons{
+
+#navigationButtons {
     display: inline-flex;
     flex-direction: column;
     justify-content: center;
 }
-#eastWestButtons{
+
+#eastWestButtons {
     display: flex;
     justify-content: center;
     flex-direction: row;

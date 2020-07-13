@@ -133,7 +133,7 @@ class VTMap extends React.Component {
 
     }
 
-    // This is a work in progress but this section will handle the guess button modal that needs to be displayed
+    // This section handles the guess button modal. y
     guessButtonHandler = (evt) => {
         evt.preventDefault();
         let check = evt.target.innerHTML + 'County'
@@ -187,7 +187,12 @@ class VTMap extends React.Component {
                 <div id='statusHeader'>
                     <h2>Status: {this.state.status}</h2>
                     <h3>Score = {this.state.points}</h3>
-
+                    <div id='statusBar'>
+                        <h2>Latitude = {this.state.latitude} </h2>
+                        <h2>Longitude = {this.state.longitude} </h2>
+                        <h2>County = {this.state.county}  </h2>
+                        <h2>Town = {this.state.town}</h2>
+                    </div>
                 </div>
                 {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler} /> : null}
                 <div>
