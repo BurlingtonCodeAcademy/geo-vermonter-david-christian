@@ -1,12 +1,11 @@
 import React from 'react';
 import './App.css';
-import { Map, TileLayer, Polygon } from 'react-leaflet';
+import { Map, TileLayer, Polygon, Polyline } from 'react-leaflet';
 import borderData from './border.js';
 import L from 'leaflet'
 import leafletPip from 'leaflet-pip'
 let defaultPos = [44.0886, -72.7317]
 let defaultZoom = 7
-
 
 class VTMap extends React.Component {
     constructor(props) {
@@ -22,7 +21,8 @@ class VTMap extends React.Component {
             modalDisplayed: false,
             points: 100,
             mapLat: 44.0886,
-            mapLon: -72.7317
+            mapLon: -72.7317,
+            locationArray: [],
         }
     }
 
@@ -87,10 +87,15 @@ class VTMap extends React.Component {
 
         let validPoint = this.checkValidPoint(layerDraft, corners, pinDraft)
 
+        const {locationArray} = this.state
+
+        const latLonArray = locationArray.concat(validPoint)
+
         console.log(`This is the valid point: ${validPoint}`)
         this.setState({
             mapLat: validPoint[0],
-            mapLon: validPoint[1]
+            mapLon: validPoint[1],
+            locationArray: latLonArray
         })
 
         // console.log(`Map Lat: ${this.state.mapLat}`)
@@ -179,38 +184,69 @@ class VTMap extends React.Component {
 
     moveHandler = (evt) => {
         evt.preventDefault()
+        
+        const {locationArray} = this.state
         if (this.state.playing === true) {
             let direction = evt.target.textContent
             switch (direction) {
                 case 'North':
-                   
-                    this.setState({
-                        mapLat: this.state.mapLat += 0.002,
-                        points: this.state.points -= 1
+
+                    
+                    let northLat = this.state.mapLat + 0.002
+                    const northLatLonArray = locationArray.concat([[northLat, this.state.mapLon]])
+                    this.setState((prevState) => {
+                        return {
+                        mapLat: northLat,
+                        points: prevState.points -= 1,
+                        locationArray: northLatLonArray,
+                        }
                     })
                     break
 
+                    
                 case 'South':
-                    this.setState({
-                        mapLat: this.state.mapLat -= 0.002,
-                        points: this.state.points -= 1
+
+                    // const {locationArray} = this.state
+                    let southLat = this.state.mapLat - 0.002
+                    const southLatLonArray = locationArray.concat([[southLat, this.state.mapLon]])
+                    this.setState((prevState) => {
+                        return{
+                        mapLat: southLat,
+                        points: prevState.points -= 1,
+                        locationArray: southLatLonArray,
+                        }
                     })
+                
                     break
 
                 case 'East':
-                    console.log(`This is the position before adding: ${this.state.mapLat}, ${this.state.mapLon}`)
-                    this.setState({
-                        mapLon: this.state.mapLon += 0.002,
-                        points: this.state.points -= 1
+
+                    // const {locationArray} = this.state
+                    let eastLon = this.state.mapLon + 0.002
+                    const eastLatLonArray = locationArray.concat([[eastLon, this.state.mapLat]])
+
+                    this.setState((prevState) => {
+                        return{
+                        mapLon: eastLon,
+                        points: prevState.points -= 1,
+                        locationArray: eastLatLonArray,
+                        }
                     })
-                    console.log(`This is the position after adding: ${this.state.mapLat}, ${this.state.mapLon}`)
+
                     break
 
                 case 'West':
-                    
-                    this.setState({
-                        mapLon: this.state.mapLon -= 0.002,
-                        points: this.state.points -= 1
+
+                    // const {locationArray} = this.state
+                    let westLon = this.state.mapLon - 0.002
+                    const westLatLonArray = locationArray.concat([[westLon, this.state.mapLat]])
+
+                    this.setState((prevState) => {
+                        return {
+                        mapLon: westLon,
+                        points: prevState.points -= 1,
+                        locationArray: westLatLonArray,
+                        }
                     })
                     break
 
@@ -260,7 +296,7 @@ class VTMap extends React.Component {
                         <TileLayer
                             url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
                             attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
-
+                        <Polyline key='drawline' positions={this.state.locationArray} color={'blue'} />
                         <Polygon positions={vtBorder} />
 
                     </Map>
@@ -279,6 +315,7 @@ class VTMap extends React.Component {
                             <button onClick={this.moveHandler}>East</button>
                         </div>
                         <button onClick={this.moveHandler}>South</button>
+                        <button onClick={this.moveHandler}>Return</button>
                     </div>
                 </div>
             </div>
