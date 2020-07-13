@@ -23,6 +23,7 @@ class VTMap extends React.Component {
             mapLon: -72.7317,
             locationArray: [],
             highScore: '',
+            username: 'Unknown'
             
         }
     }
@@ -165,6 +166,18 @@ class VTMap extends React.Component {
                 town: townVar,
                 status: 'Correct!',
             })
+
+            let scoreArr = JSON.parse(localStorage.getItem('scores')) || [] // if scores is empty, localStorage.getItem('scores') is null, which is falsey, so it will be an empty array
+            let finalScore = this.state.points
+            let userName = this.state.username // Ask for username function
+            let scoreObj = {
+                user: userName,
+                score: finalScore
+            }
+            scoreArr.push(scoreObj)
+            localStorage.setItem('scores', JSON.stringify(scoreArr))
+            console.log(`Score obj: ${scoreObj} local storage: ${localStorage.getItem('scores')}`)
+            
         } else {
             // 
             // console.log(`${check} is not equal to ${this.state.townData.county}`)
