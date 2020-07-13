@@ -21,6 +21,8 @@ class VTMap extends React.Component {
             guess: '',
             modalDisplayed: false,
             points: 100,
+            mapLat: 44.0886,
+            mapLon: -72.7317
         }
     }
 
@@ -70,7 +72,8 @@ class VTMap extends React.Component {
         evt.preventDefault();
 
         this.setState({
-            playing: true
+            playing: true,
+            points: 100
         })
         // let myMap = document.getElementById('mainMap')
 
@@ -85,7 +88,13 @@ class VTMap extends React.Component {
         let validPoint = this.checkValidPoint(layerDraft, corners, pinDraft)
 
         console.log(`This is the valid point: ${validPoint}`)
-        defaultPos = validPoint
+        this.setState({
+            mapLat: validPoint[0],
+            mapLon: validPoint[1]
+        })
+
+        // console.log(`Map Lat: ${this.state.mapLat}`)
+        // defaultPos = validPoint
         defaultZoom = 18
 
         // when the 'Valid Point' is chosen, the game will reset state to add the ?'s to the info panel
@@ -133,7 +142,7 @@ class VTMap extends React.Component {
 
     }
 
-    // This section handles the guess button modal. y
+    // This section handles the guess button modal. 
     guessButtonHandler = (evt) => {
         evt.preventDefault();
         let check = evt.target.innerHTML + 'County'
@@ -166,6 +175,52 @@ class VTMap extends React.Component {
                 modalDisplayed: true
             })
         }
+    }
+
+    moveHandler = (evt) => {
+        evt.preventDefault()
+        if (this.state.playing === true) {
+            let direction = evt.target.textContent
+            switch (direction) {
+                case 'North':
+                   
+                    this.setState({
+                        mapLat: this.state.mapLat += 0.002,
+                        points: this.state.points -= 1
+                    })
+                    break
+
+                case 'South':
+                    this.setState({
+                        mapLat: this.state.mapLat -= 0.002,
+                        points: this.state.points -= 1
+                    })
+                    break
+
+                case 'East':
+                    console.log(`This is the position before adding: ${this.state.mapLat}, ${this.state.mapLon}`)
+                    this.setState({
+                        mapLon: this.state.mapLon += 0.002,
+                        points: this.state.points -= 1
+                    })
+                    console.log(`This is the position after adding: ${this.state.mapLat}, ${this.state.mapLon}`)
+                    break
+
+                case 'West':
+                    
+                    this.setState({
+                        mapLon: this.state.mapLon -= 0.002,
+                        points: this.state.points -= 1
+                    })
+                    break
+
+                default:
+                    break
+            }
+
+
+        }
+
     }
 
     cancelHandler = (evt) => {
@@ -201,7 +256,7 @@ class VTMap extends React.Component {
                 </div>
                 {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler} /> : null}
                 <div>
-                    <Map center={defaultPos} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} dragging={false}>
+                    <Map center={[this.state.mapLat, this.state.mapLon]} zoom={defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} dragging={false}>
                         <TileLayer
                             url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
                             attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
@@ -218,12 +273,12 @@ class VTMap extends React.Component {
                 </div>
                 <div id='centerButtons'>
                     <div id='navigationButtons'>
-                        <button>North</button>
+                        <button onClick={this.moveHandler}>North</button>
                         <div id='eastWestButtons'>
-                            <button>East</button>
-                            <button>West</button>
+                            <button onClick={this.moveHandler}>West</button>
+                            <button onClick={this.moveHandler}>East</button>
                         </div>
-                        <button>South</button>
+                        <button onClick={this.moveHandler}>South</button>
                     </div>
                 </div>
             </div>
