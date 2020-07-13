@@ -89,7 +89,7 @@ class VTMap extends React.Component {
 
         const {locationArray} = this.state
 
-        const latLonArray = locationArray.concat(validPoint)
+        const latLonArray = locationArray.concat([validPoint])
 
         console.log(`This is the valid point: ${validPoint}`)
         this.setState({
@@ -184,7 +184,7 @@ class VTMap extends React.Component {
 
     moveHandler = (evt) => {
         evt.preventDefault()
-        
+
         const {locationArray} = this.state
         if (this.state.playing === true) {
             let direction = evt.target.textContent
@@ -223,7 +223,7 @@ class VTMap extends React.Component {
 
                     // const {locationArray} = this.state
                     let eastLon = this.state.mapLon + 0.002
-                    const eastLatLonArray = locationArray.concat([[eastLon, this.state.mapLat]])
+                    const eastLatLonArray = locationArray.concat([[this.state.mapLat, eastLon]])
 
                     this.setState((prevState) => {
                         return{
@@ -239,7 +239,7 @@ class VTMap extends React.Component {
 
                     // const {locationArray} = this.state
                     let westLon = this.state.mapLon - 0.002
-                    const westLatLonArray = locationArray.concat([[westLon, this.state.mapLat]])
+                    const westLatLonArray = locationArray.concat([[this.state.mapLat, westLon]])
 
                     this.setState((prevState) => {
                         return {
