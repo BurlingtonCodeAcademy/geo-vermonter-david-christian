@@ -23,6 +23,8 @@ class VTMap extends React.Component {
             mapLat: 44.0886,
             mapLon: -72.7317,
             locationArray: [],
+            startLat: null,
+            startLon: null
         }
     }
 
@@ -95,6 +97,8 @@ class VTMap extends React.Component {
         this.setState({
             mapLat: validPoint[0],
             mapLon: validPoint[1],
+            startLat: validPoint[0],
+            startLon: validPoint[1],
             locationArray: latLonArray
         })
 
@@ -250,6 +254,15 @@ class VTMap extends React.Component {
                     })
                     break
 
+                case 'Return':
+                    this.setState((prevState) => {
+                        return{
+                        mapLat: this.state.startLat,
+                        mapLon: this.state.startLon
+                        }
+                    })
+                    break
+                    
                 default:
                     break
             }
