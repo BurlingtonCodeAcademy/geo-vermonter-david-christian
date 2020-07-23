@@ -15,6 +15,10 @@
     font-size: 125%;
 }
 
+#nameForm{
+    display:flex;
+    justify-content: center;
+}
 #statusBar {
     display: flex;
     flex-direction: row;
