@@ -16,7 +16,7 @@ const cleanState = {
     points: 100,
     mapLat: 44.0886,
     mapLon: -72.7317,
-    locationArray: [],
+    locationArray: [], /* This is the polyline array? */
     highScore: '',
     userName: 'Your Name',
     defaultZoom: 7,
@@ -94,7 +94,8 @@ class VTMap extends React.Component {
 
         this.setState({
             playing: true,
-            points: 100
+            points: 100,
+
         })
 
         let corners = this.getCorners(borderData)
@@ -170,6 +171,9 @@ class VTMap extends React.Component {
         let check = evt.target.innerHTML + 'County'
         if (check === this.state.townData.county) {
             // console.log(`${check} is equal to ${this.state.townData.county}`)
+            
+            
+            
             let latVar = this.state.townData.latitude
             let lonVar = this.state.townData.longitude
             let countyVar = this.state.townData.county
@@ -180,6 +184,8 @@ class VTMap extends React.Component {
                 county: countyVar,
                 town: townVar,
                 status: 'Correct!',
+                playing: false,
+                locationArray: cleanState.locationArray
             })
 
             let scoreArr = JSON.parse(localStorage.getItem('score')) || [] // if scores is empty, localStorage.getItem('scores') is null, which is falsey, so it will be an empty array
@@ -189,6 +195,8 @@ class VTMap extends React.Component {
                 userName: userName,
                 score: finalScore
             }
+            
+           
 
             scoreArr.push(scoreObj)
 
