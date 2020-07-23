@@ -20,6 +20,8 @@ const cleanState = {
     highScore: '',
     userName: 'Your Name',
     defaultZoom: 7,
+    startLon: null,
+    startLat: null
     // + add any additional state items here
 }
 
@@ -112,6 +114,8 @@ class VTMap extends React.Component {
         this.setState({
             mapLat: validPoint[0],
             mapLon: validPoint[1],
+            startLat: validPoint[0],
+            startLon: validPoint[1],
             locationArray: latLonArray,
             defaultZoom: 18
         })
@@ -279,8 +283,8 @@ class VTMap extends React.Component {
                 case 'Return':
                     this.setState((prevState) => {
                         return {
-                            mapLat: this.state.startLat,
-                            mapLon: this.state.startLon
+                            mapLat: prevState.startLat,
+                            mapLon: prevState.startLon
                         }
                     })
                     break
