@@ -34,11 +34,10 @@ class VTMap extends React.Component {
         let storageRecords = JSON.parse(localStorage.getItem('score')) || []
 
         console.log(storageRecords)
-        let lastGameScore = storageRecords[storageRecords.length - 1].score
-        let lastGameName = storageRecords[storageRecords.length - 1].userName
 
-        //    console.log(lastGameName)
-        //    console.log(lastGameScore)
+        let lastGameScore = storageRecords.length >= 1 ? storageRecords[storageRecords.length - 1].score : ''
+
+        let lastGameName = storageRecords.length >= 1 ? storageRecords[storageRecords.length - 1].userName : ''
 
         this.setState({
             lastGameScore: lastGameScore,
@@ -298,7 +297,7 @@ class VTMap extends React.Component {
 
     cancelHandler = (evt) => {
         evt.preventDefault();
-        console.log('What is this: ' + evt.target.textContent)
+        // console.log('What is this: ' + evt.target.textContent)
         if (evt.target.textContent === 'Cancel') {
             this.setState({
                 modalDisplayed: false,
@@ -337,9 +336,9 @@ class VTMap extends React.Component {
                 <h2>Username : {this.state.userName}</h2>
 
                 <div id='statusHeader'>
-                    <h2>Status : </h2>
+                    <h2>Status : {this.state.status} </h2>
                     <div id='row'>
-                        <h3>Score : </h3>
+                        <h3>Score : {this.state.points}</h3>
 
                     </div>
 
