@@ -321,66 +321,75 @@ class VTMap extends React.Component {
 
         return ( // You can only return one thing, so put entire JSX in one div
 
-            <div id='mainContainer'>
+            <div className="wholePage" id='mainContainer'>
+                <div id='container'>
+                    <form id='nameForm' onSubmit={this.handleUsernameSubmit}>
+                        <label htmlFor="username">Enter your username</label>
+                        <input
+                            type="text"
+                            name="username"
+                            ref={(input) => this.input = input}
+                        />
+                        <button type='submit'>Submit</button>
+                    </form>
 
-                <form id='nameForm' onSubmit={this.handleUsernameSubmit}>
-                    <label htmlFor="username">Enter your username</label>
-                    <button type='submit'>Submit</button>
-                    <input
-                        type="text"
-                        name="username"
-                        ref={(input) => this.input = input}
-                    />
-                </form>
+                    <h3>Username : {this.state.userName}</h3>
 
-                <h2>Username : {this.state.userName}</h2>
+                    <div id='statusHeader'>
+                        <h3>Status : {this.state.status} </h3>
+                        <div id='row'>
+                            <h3>Score : {this.state.points}</h3>
 
-                <div id='statusHeader'>
-                    <h2>Status : {this.state.status} </h2>
-                    <div id='row'>
-                        <h3>Score : {this.state.points}</h3>
-
-                    </div>
-
-                    <div id='statusBar'>
-                        <h2>Latitude = {this.state.latitude} </h2>
-                        <h2>Longitude = {this.state.longitude} </h2>
-                        <h2>County = {this.state.county}  </h2>
-                        <h2>Town = {this.state.town}</h2>
-                    </div>
-                </div>
-                {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler} /> : null}
-                <div>
-                    <h4> Last Player : {this.state.lastGameName}</h4>
-                    <h4> Last Score : {this.state.lastGameScore}</h4>
-                </div>
-                <div>
-                    <Map center={[this.state.mapLat, this.state.mapLon]} zoom={this.state.defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} dragging={false}>
-                        <TileLayer
-                            url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                            attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
-                        <Polyline key='drawline' positions={this.state.locationArray} color={'blue'} />
-                        <Polygon positions={vtBorder} />
-
-                    </Map>
-                </div>
-                <div id='gameButtons'>
-                    <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
-                    <button disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
-                    <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
-
-                </div>
-                <div id='centerButtons'>
-                    <div id='navigationButtons'>
-                        <button onClick={this.moveHandler}>North</button>
-                        <div id='eastWestButtons'>
-                            <button onClick={this.moveHandler}>West</button>
-                            <button onClick={this.moveHandler}>East</button>
                         </div>
-                        <button onClick={this.moveHandler}>South</button>
-                        <button onClick={this.moveHandler}>Return</button>
+
+                        <div id='statusBar'>
+                            <h2>Latitude = {this.state.latitude} </h2>
+                            <h2>Longitude = {this.state.longitude} </h2>
+                            <h2>County = {this.state.county}  </h2>
+                            <h2>Town = {this.state.town}</h2>
+                        </div>
+                        <h4> Last Player : {this.state.lastGameName}</h4>
+                        <h4> Last Score : {this.state.lastGameScore}</h4>
                     </div>
                 </div>
+                <div id='containerTwo'>
+                    {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler} /> : null}
+                    <div>
+                        
+                        <div id='gameButtons'>
+                            <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
+                            <button disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
+                            <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
+
+                        </div>
+                    </div>
+
+                    <div id='mapSection'>
+                        
+                        <Map center={[this.state.mapLat, this.state.mapLon]} zoom={this.state.defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} dragging={false}>
+                            <TileLayer
+                                url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                                attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
+                            <Polyline key='drawline' positions={this.state.locationArray} color={'blue'} />
+                            <Polygon positions={vtBorder} />
+
+                        </Map>
+
+                        
+                    </div>
+                    <div id='centerButtons'>
+                            <div id='navigationButtons'>
+                                <button onClick={this.moveHandler}>North</button>
+                                <div id='eastWestButtons'>
+                                    <button onClick={this.moveHandler}>West</button>
+                                    <button onClick={this.moveHandler}>East</button>
+                                </div>
+                                <button onClick={this.moveHandler}>South</button>
+                                <button onClick={this.moveHandler}>Return</button>
+                            </div>
+                        </div>
+                </div>
+
             </div>
         )
     }

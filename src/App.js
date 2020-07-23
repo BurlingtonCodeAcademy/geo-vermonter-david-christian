@@ -15,8 +15,8 @@ class App extends React.Component {
     render() {
 
         return (
-            <div>
-                <div style={{ height: '600px', width: '600px' }}>
+            <div className='wholePage'>
+                <div className='wholePage'>
                     <VTMap />
                 </div>               
             </div>
