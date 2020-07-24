@@ -18,7 +18,7 @@ const cleanState = {
     points: 100,
     mapLat: 44.0886,
     mapLon: -72.7317,
-    locationArray: [],
+    locationArray: [], /* This is the polyline array? */
     highScore: '',
     userName: 'Your Name',
     defaultZoom: 7,
@@ -109,7 +109,8 @@ class VTMap extends React.Component {
 
         this.setState({
             playing: true,
-            points: 100
+            points: 100,
+
         })
 
         let corners = this.getCorners(borderData)
@@ -129,6 +130,8 @@ class VTMap extends React.Component {
         this.setState({
             mapLat: validPoint[0],
             mapLon: validPoint[1],
+            startLat: validPoint[0],
+            startLon: validPoint[1],
             locationArray: latLonArray,
             startLat: validPoint[0],
             startLon: validPoint[1],
@@ -188,6 +191,9 @@ class VTMap extends React.Component {
 
         if (check === this.state.townData.county) {
             // console.log(`${check} is equal to ${this.state.townData.county}`)
+            
+            
+            
             let latVar = this.state.townData.latitude
             let lonVar = this.state.townData.longitude
             let countyVar = this.state.townData.county
@@ -212,6 +218,8 @@ class VTMap extends React.Component {
                 score: finalScore,
 
             }
+            
+           
 
             scoreArr.push(scoreObj)
 
@@ -446,4 +454,4 @@ function GuessCountyModal(props) {
     );
 }
 
-export default VTMap
+export default VTMap;
