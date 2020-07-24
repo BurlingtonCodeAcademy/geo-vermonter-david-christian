@@ -1,3 +1,4 @@
+// Brought in neccessary Dependancies
 import React from 'react';
 import './App.css';
 import { Map, TileLayer, Polygon, Polyline } from 'react-leaflet';
@@ -5,6 +6,7 @@ import borderData from './border.js';
 import L from 'leaflet'
 import leafletPip from 'leaflet-pip'
 
+// Sets up clean state to be used to re-set the game when the game has ended for any reason
 const cleanState = {
     latitude: '',
     longitude: '',
@@ -20,9 +22,12 @@ const cleanState = {
     highScore: '',
     userName: 'Your Name',
     defaultZoom: 7,
+    startLat: [],
+    startLon: []
     // + add any additional state items here
 }
 
+// Sets up the main VTMap componenet that handles the majority of the application
 class VTMap extends React.Component {
     constructor(props) {
         super(props)
@@ -30,22 +35,33 @@ class VTMap extends React.Component {
         this.state = cleanState
     }
 
+    // Initializes Local Storage information needed to set up previous game statu(s)
     componentDidMount() {
         let storageRecords = JSON.parse(localStorage.getItem('score')) || []
 
-        console.log(storageRecords)
-
         let lastGameScore = storageRecords.length >= 1 ? storageRecords[storageRecords.length - 1].score : ''
+        let secondLastGameScore = storageRecords.length >= 1 ? storageRecords[storageRecords.length - 2].score : ''
+        
+        // Commented out the 4 lines below (lines 46/51/56/60) to keep as examples of how the game history display can be expanded furthur easily..
+        // let thirdLastGameScore = storageRecords.length >= 1 ? storageRecords[storageRecords.length - 3].score : ''
 
         let lastGameName = storageRecords.length >= 1 ? storageRecords[storageRecords.length - 1].userName : ''
+        let secondLastGameName = storageRecords.length >= 1 ? storageRecords[storageRecords.length - 2].userName : ''
+        
+        // let thirdLastGameName = storageRecords.length >= 1 ? storageRecords[storageRecords.length - 3].userName : ''
 
         this.setState({
             lastGameScore: lastGameScore,
+            secondLastGameScore: secondLastGameScore,
+            // thirdLastGameScore: thirdLastGameScore,
+
             lastGameName: lastGameName,
+            secondLastGameName: secondLastGameName,
+            // thirdLastGameName: thirdLastGameName
         })
     }
 
-    // itterate over indexs [0]  and [1] in each array in the list of arrays and return the highest of each value
+    // Itterate over indexs [0] and [1] in each array in the list of arrays and return the highest of each value
     getCorners = () => {
 
         let maxLon = -73.35218
@@ -73,20 +89,21 @@ class VTMap extends React.Component {
         )
     }
 
-    // Logic to check if the randomly chosen point is within the VTBorder
+    // Logic to check if the randomly chosen point is within the Border of Vermont (VTBorder)
     checkValidPoint = (layer, rect, pin) => {
         if (layer.length) {
-            // console.log(`Correct length, returning pin: ${pin}`)
+
             return pin
         }
         else {
-            // console.log("Invalid point...")
+
             let newPin = this.randPoint(rect)
             let newLayer = (leafletPip.pointInLayer([newPin[1], newPin[0]], L.geoJSON(borderData)))
             return this.checkValidPoint(newLayer, rect, newPin)
         }
     }
 
+    // Handles Start Button Click Event
     clickHandlerStart = (evt) => {
         evt.preventDefault();
 
@@ -113,18 +130,17 @@ class VTMap extends React.Component {
             mapLat: validPoint[0],
             mapLon: validPoint[1],
             locationArray: latLonArray,
-            defaultZoom: 18
-        })
-
-        // When the 'Valid Point' is chosen, the game will reset state to add the ?'s to the info panel
-        this.setState({
+            startLat: validPoint[0],
+            startLon: validPoint[1],
+            defaultZoom: 18,
             latitude: '?',
             longitude: '?',
             county: '?',
             town: '?',
+            status: 'Game Started, Awaiting your first guess..'
         })
 
-        // pulling the county/lat/town/village(not county according to Postman?) --  --All Info stored in variable 'townData'
+        // Pulling the county/lat/town/village(not county according to Postman?) --  --All Info stored in variable 'townData'
         fetch(`https://nominatim.openstreetmap.org/reverse?lat=${validPoint[0]}&lon=${validPoint[1]}&format=geojson`)
             .then((res) => res.json())
             .then((obj) => {
@@ -139,7 +155,7 @@ class VTMap extends React.Component {
             })
     }
 
-    // Handles guess button and then displays current location data + makes the start button available again
+    // Handles Give Up Button and then displays current location data + makes the start button available again
     giveUpHandler = (evt) => {
         evt.preventDefault();
 
@@ -154,16 +170,22 @@ class VTMap extends React.Component {
                 longitude: lonVar,
                 county: countyVar,
                 town: townVar,
-                playing: false
-            });
+                status: 'Better Luck Next Time!',
+                playing: false,
+                locationArray: [],
+                modalDisplayed: false,
+                defaultZoom: 14
+            })
         }
 
     }
 
-    // This section handles the guess button modal. 
+    // This section handles the Guess Button + Guess Logic 
     guessButtonHandler = (evt) => {
         evt.preventDefault();
-        let check = evt.target.innerHTML + 'County'
+
+        let check = evt.target.innerHTML + 'County';
+
         if (check === this.state.townData.county) {
             // console.log(`${check} is equal to ${this.state.townData.county}`)
             let latVar = this.state.townData.latitude
@@ -176,6 +198,10 @@ class VTMap extends React.Component {
                 county: countyVar,
                 town: townVar,
                 status: 'Correct!',
+                playing: false,
+                locationArray: [],
+                modalDisplayed: false,
+                defaultZoom: 14
             })
 
             let scoreArr = JSON.parse(localStorage.getItem('score')) || [] // if scores is empty, localStorage.getItem('scores') is null, which is falsey, so it will be an empty array
@@ -183,7 +209,8 @@ class VTMap extends React.Component {
             let userName = this.state.userName // Ask for username function
             let scoreObj = {
                 userName: userName,
-                score: finalScore
+                score: finalScore,
+
             }
 
             scoreArr.push(scoreObj)
@@ -199,8 +226,9 @@ class VTMap extends React.Component {
                 points: state.points - 10,
             }))
         }
-
     }
+
+    // Handles Guess Modal Display
     guessHandler = (evt) => {
         if (evt.target.textContent === 'Guess') {
             this.setState({
@@ -209,6 +237,7 @@ class VTMap extends React.Component {
         }
     }
 
+    // Handles Movement Buttons 
     moveHandler = (evt) => {
         evt.preventDefault()
 
@@ -217,7 +246,6 @@ class VTMap extends React.Component {
             let direction = evt.target.textContent
             switch (direction) {
                 case 'North':
-
 
                     let northLat = this.state.mapLat + 0.002
                     const northLatLonArray = locationArray.concat([[northLat, this.state.mapLon]])
@@ -233,7 +261,6 @@ class VTMap extends React.Component {
 
                 case 'South':
 
-                    // const {locationArray} = this.state
                     let southLat = this.state.mapLat - 0.002
                     const southLatLonArray = locationArray.concat([[southLat, this.state.mapLon]])
                     this.setState((prevState) => {
@@ -243,12 +270,10 @@ class VTMap extends React.Component {
                             locationArray: southLatLonArray,
                         }
                     })
-
                     break
 
                 case 'East':
 
-                    // const {locationArray} = this.state
                     let eastLon = this.state.mapLon + 0.002
                     const eastLatLonArray = locationArray.concat([[this.state.mapLat, eastLon]])
 
@@ -259,12 +284,10 @@ class VTMap extends React.Component {
                             locationArray: eastLatLonArray,
                         }
                     })
-
                     break
 
                 case 'West':
 
-                    // const {locationArray} = this.state
                     let westLon = this.state.mapLon - 0.002
                     const westLatLonArray = locationArray.concat([[this.state.mapLat, westLon]])
 
@@ -276,11 +299,13 @@ class VTMap extends React.Component {
                         }
                     })
                     break
+
                 case 'Return':
+
                     this.setState((prevState) => {
                         return {
-                            mapLat: this.state.startLat,
-                            mapLon: this.state.startLon
+                            mapLat: prevState.startLat,
+                            mapLon: prevState.startLon
                         }
                     })
                     break
@@ -295,9 +320,10 @@ class VTMap extends React.Component {
 
     }
 
+    // Handles Cancel button eveent
     cancelHandler = (evt) => {
         evt.preventDefault();
-        // console.log('What is this: ' + evt.target.textContent)
+
         if (evt.target.textContent === 'Cancel') {
             this.setState({
                 modalDisplayed: false,
@@ -305,6 +331,7 @@ class VTMap extends React.Component {
         }
     }
 
+    // Handles Username submit event
     handleUsernameSubmit = evt => {
         evt.preventDefault();
 
@@ -320,11 +347,12 @@ class VTMap extends React.Component {
         })
 
         return ( // You can only return one thing, so put entire JSX in one div
-
             <div className="wholePage" id='mainContainer'>
-                <div id='container'>
+                <div className='wholePage' id='header'>
+                    <h1>GeoVermonter</h1>
                     <form id='nameForm' onSubmit={this.handleUsernameSubmit}>
-                        <label htmlFor="username">Enter your username</label>
+                        <label>Enter your username or</label>
+                        <label>Change you current name</label>
                         <input
                             type="text"
                             name="username"
@@ -332,69 +360,74 @@ class VTMap extends React.Component {
                         />
                         <button type='submit'>Submit</button>
                     </form>
-
-                    <h3>Username : {this.state.userName}</h3>
-
-                    <div id='statusHeader'>
-                        <h3>Status : {this.state.status} </h3>
-                        <div id='row'>
-                            <h3>Score : {this.state.points}</h3>
-
+                </div>
+                <div className='wholePage' id='centerRow'>
+                    <div id='container'>
+                        <h3>Username : {this.state.userName}</h3>
+                        <div>
+                            <h3>Status : {this.state.status} </h3>
                         </div>
-
+                        <h3>Score : {this.state.points}</h3>
                         <div id='statusBar'>
                             <h2>Latitude = {this.state.latitude} </h2>
                             <h2>Longitude = {this.state.longitude} </h2>
                             <h2>County = {this.state.county}  </h2>
                             <h2>Town = {this.state.town}</h2>
                         </div>
-                        <h4> Last Player : {this.state.lastGameName}</h4>
-                        <h4> Last Score : {this.state.lastGameScore}</h4>
                     </div>
-                </div>
-                <div id='containerTwo'>
-                    {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler} /> : null}
-                    <div>
-                        
-                        <div id='gameButtons'>
-                            <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
-                            <button disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
-                            <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
+                    <div id='containerTwo'>
+                        {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler} /> : null}
+                        <div>
 
-                        </div>
-                    </div>
+                            <div id='gameButtons'>
+                                <button className='gameButton' disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
+                                <button className='gameButton' disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
+                                <button className='gameButton' disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
 
-                    <div id='mapSection'>
-                        
-                        <Map center={[this.state.mapLat, this.state.mapLon]} zoom={this.state.defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} dragging={false}>
-                            <TileLayer
-                                url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                                attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
-                            <Polyline key='drawline' positions={this.state.locationArray} color={'blue'} />
-                            <Polygon positions={vtBorder} />
-
-                        </Map>
-
-                        
-                    </div>
-                    <div id='centerButtons'>
-                            <div id='navigationButtons'>
-                                <button onClick={this.moveHandler}>North</button>
-                                <div id='eastWestButtons'>
-                                    <button onClick={this.moveHandler}>West</button>
-                                    <button onClick={this.moveHandler}>East</button>
-                                </div>
-                                <button onClick={this.moveHandler}>South</button>
-                                <button onClick={this.moveHandler}>Return</button>
                             </div>
                         </div>
-                </div>
+                        <div id='mapSection'>
+                            <Map center={[this.state.mapLat, this.state.mapLon]} zoom={this.state.defaultZoom} style={{ height: '650px', width: '650px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} dragging={false}>
+                                <TileLayer
+                                    url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                                    attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community' />
+                                <Polyline key='drawline' positions={this.state.locationArray} color={'blue'} />
+                                <Polygon positions={vtBorder} />
 
+                            </Map>
+                        </div>
+                    </div>
+                    <div id='containerThree'>
+                        <h2>Previous Game Log</h2>
+                        <div id='containerFour'>
+                            <div id='scoreRowOne'>
+                                <h4>1 : {this.state.lastGameName}</h4>
+                                <h5>2 : {this.state.secondLastGameName}</h5>
+                            </div>
+                            <div id='scoreRowTwo'>
+                                <h4>1 : {this.state.lastGameScore}</h4>
+                                <h5>2 : {this.state.secondLastGameScore}</h5>
+                            </div>
+                        </div>
+                        <div id='centerButtons'>
+                            <div id='navigationButtons'>
+                                <button className='gameButton' onClick={this.moveHandler}>North</button>
+                                <div id='eastWestButtons'>
+                                    <button className='gameButton' onClick={this.moveHandler}>West</button>
+                                    <button className='gameButton' onClick={this.moveHandler}>East</button>
+                                </div>
+                                <button className='gameButton' onClick={this.moveHandler}>South</button>
+                                <button className='gameButton' onClick={this.moveHandler}>Return</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
 }
 
+// Guess Modal 
 function GuessCountyModal(props) {
     let countyList = ['Grand Isle', 'Franklin', 'Orleans', 'Essex', 'Chittenden', 'Lamoille', 'Caledonia', 'Washington', 'Addison', 'Bennington', 'Orange', 'Rutland', 'Windham', 'Windsor']
     return (
