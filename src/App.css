@@ -1,3 +1,7 @@
+h3 {
+    margin: 0;
+}
+
 #body {
     background-image: url("https://cdn3.vectorstock.com/i/1000x1000/44/62/earth-relief-map-seamless-pattern-element-vector-12184462.jpg");
     margin: 0;
@@ -7,6 +11,8 @@
 .wholePage{
     height: 100vh;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 #root {
@@ -16,21 +22,19 @@
 
 #mainContainer {
     display: flex;
-    flex-direction: row;
-    position: relative;
+    flex-direction: column;
     font-size: 125%;
     align-items: center;
     justify-content: space-evenly;
 }
-#container{
+
+#topTextContainer{
     display:flex;
     flex-direction: column;
-    height: 100%;
     justify-content: center;
 }
 
-#containerTwo{
-    height:100%;
+#mapContainer{
     display: flex;
     flex-direction: column;
     justify-content: center;

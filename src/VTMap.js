@@ -334,16 +334,8 @@ class VTMap extends React.Component {
         return ( // You can only return one thing, so put entire JSX in one div
 
             <div className="wholePage" id='mainContainer'>
-                <div id='container'>
-                    <form id='nameForm' onSubmit={this.handleUsernameSubmit}>
-                        <label htmlFor="username">Enter your username</label>
-                        <input
-                            type="text"
-                            name="username"
-                            ref={(input) => this.input = input}
-                        />
-                        <button type='submit'>Submit</button>
-                    </form>
+                <div id='topTextContainer'>
+                 
 
                     <h3>Username : {this.state.userName}</h3>
 
@@ -364,18 +356,11 @@ class VTMap extends React.Component {
                         <h4> Last Score : {this.state.lastGameScore}</h4>
                     </div>
                 </div>
-                <div id='containerTwo'>
+                <div id='mapContainer'>
                     {this.state.modalDisplayed === true ? <GuessCountyModal handleCancel={this.cancelHandler} listGuess={this.guessButtonHandler} /> : null}
-                    <div>
+                 
                         
-                        <div id='gameButtons'>
-                            <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
-                            <button disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
-                            <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
-
-                        </div>
-                    </div>
-
+                       
                     <div id='mapSection'>
                         
                         <Map center={[this.state.mapLat, this.state.mapLon]} zoom={this.state.defaultZoom} style={{ height: '600px', width: '600px' }} zoomControl={false} scrollWheelZoom={false} touchZoom={false} doubleClickZoom={false} dragging={false}>
@@ -399,6 +384,15 @@ class VTMap extends React.Component {
                                 <button onClick={this.moveHandler}>South</button>
                                 <button onClick={this.moveHandler}>Return</button>
                             </div>
+
+                            
+
+                        </div>
+                        <div id='gameButtons'>
+                            <button disabled={this.state.playing} onClick={this.clickHandlerStart}>Start Game</button>
+                            <button disabled={!this.state.playing} onClick={this.guessHandler}>Guess</button>
+                            <button disabled={!this.state.playing} onClick={this.giveUpHandler}>Give Up</button>
+               
                         </div>
                 </div>
 

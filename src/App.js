@@ -15,11 +15,7 @@ class App extends React.Component {
     render() {
 
         return (
-            <div className='wholePage'>
-                <div className='wholePage'>
-                    <VTMap />
-                </div>               
-            </div>
+            <VTMap />
         )
     }
 }
