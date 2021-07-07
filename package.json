@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "A geographic guessing game in Vermont",
   "dependencies": {
+    "leaflet": "^1.6.0",
+    "leaflet-pip": "^1.1.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-leaflet": "^2.7.0",
     "react-scripts": "3.0.1"
   },
   "scripts": {
